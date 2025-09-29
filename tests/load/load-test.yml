@@ -1,0 +1,90 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 50
+      name: "Ramp up load"
+    - duration: 300
+      arrivalRate: 100
+      name: "Sustained load"
+    - duration: 60
+      arrivalRate: 200
+      name: "Peak load"
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+      X-Request-ID: '{{ $randomString() }}'
+      X-Timestamp: '{{ $timestamp }}'
+
+scenarios:
+  - name: "Health Check"
+    weight: 10
+    flow:
+      - get:
+          url: "/health"
+          expect:
+            - statusCode: 200
+
+  - name: "Client Verification"
+    weight: 30
+    flow:
+      - post:
+          url: "/functions/verify-client"
+          json:
+            call:
+              call_id: "{{ $randomString() }}"
+            args:
+              phoneNumber: "{{ $randomPhoneNumber() }}"
+              dateOfBirth: "{{ $randomDate() }}"
+          expect:
+            - statusCode: 200
+
+  - name: "Insurance Verification"
+    weight: 25
+    flow:
+      - post:
+          url: "/functions/check-insurance"
+          json:
+            call:
+              call_id: "{{ $randomString() }}"
+            args:
+              insuranceInfo:
+                provider: "{{ $randomFromArray(['Aetna', 'Blue Cross Blue Shield', 'Cigna', 'Medicare', 'Tricare']) }}"
+                memberId: "{{ $randomString() }}"
+                dateOfBirth: "{{ $randomDate() }}"
+          expect:
+            - statusCode: 200
+
+  - name: "Get Availability"
+    weight: 20
+    flow:
+      - post:
+          url: "/functions/get-availability"
+          json:
+            call:
+              call_id: "{{ $randomString() }}"
+            args:
+              providerId: "{{ $randomFromArray(['charles_maddix', 'ava_suleiman', 'dr_soto']) }}"
+              date: "{{ $randomDate() }}"
+          expect:
+            - statusCode: 200
+
+  - name: "Schedule Appointment"
+    weight: 15
+    flow:
+      - post:
+          url: "/functions/schedule-appointment"
+          json:
+            call:
+              call_id: "{{ $randomString() }}"
+            args:
+              clientId: "{{ $randomString() }}"
+              providerId: "{{ $randomFromArray(['charles_maddix', 'ava_suleiman', 'dr_soto']) }}"
+              date: "{{ $randomDate() }}"
+              time: "{{ $randomFromArray(['10:30', '11:00', '11:30', '14:00', '14:30', '15:00']) }}"
+              type: "{{ $randomFromArray(['comprehensive_evaluation', 'follow_up', 'ketamine_consultation']) }}"
+          expect:
+            - statusCode: 200

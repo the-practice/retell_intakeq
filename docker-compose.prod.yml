@@ -1,0 +1,158 @@
+version: '3.8'
+
+services:
+  voice-agent:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - RETELL_API_KEY=${RETELL_API_KEY}
+      - RETELL_AGENT_ID=${RETELL_AGENT_ID}
+      - INTAKEQ_API_KEY=${INTAKEQ_API_KEY}
+      - INTAKEQ_BASE_URL=${INTAKEQ_BASE_URL}
+      - INTAKEQ_CLINIC_ID=${INTAKEQ_CLINIC_ID}
+      - AVAILITY_API_KEY=${AVAILITY_API_KEY}
+      - AVAILITY_SECRET=${AVAILITY_SECRET}
+      - AVAILITY_BASE_URL=${AVAILITY_BASE_URL}
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - PRACTICE_NAME=${PRACTICE_NAME}
+      - PRACTICE_ADDRESS=${PRACTICE_ADDRESS}
+      - PRACTICE_PHONE=${PRACTICE_PHONE}
+      - PRACTICE_EMAIL=${PRACTICE_EMAIL}
+      - PROVIDER_SCHEDULES=${PROVIDER_SCHEDULES}
+      - LUNCH_BREAK_START=${LUNCH_BREAK_START}
+      - LUNCH_BREAK_END=${LUNCH_BREAK_END}
+      - ACCEPTED_INSURANCE=${ACCEPTED_INSURANCE}
+      - APPOINTMENT_TYPES=${APPOINTMENT_TYPES}
+      - LOG_LEVEL=info
+      - AUDIT_LOG_ENABLED=true
+      - DATA_RETENTION_DAYS=2555
+    depends_on:
+      - redis
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - voice-agent
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.prod.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  logrotate:
+    image: blacklabelops/logrotate
+    volumes:
+      - ./logs:/var/log/logrotate
+      - ./logrotate.conf:/etc/logrotate.conf
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  prometheus_data:
+  grafana_data:

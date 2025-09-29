@@ -1,0 +1,59 @@
+{
+  "name": "retell-intakeq-voice-agent",
+  "version": "1.0.0",
+  "description": "HIPAA-compliant voice agent Matt for The Practice psychiatric wellness clinic",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:load": "artillery run tests/load/load-test.yml",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "build": "webpack --mode production",
+    "docker:build": "docker build -t retell-intakeq .",
+    "docker:run": "docker run -p 3000:3000 retell-intakeq",
+    "docker:compose": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "keywords": [
+    "retell-ai",
+    "voice-agent",
+    "hipaa",
+    "healthcare",
+    "appointment-scheduling",
+    "intakeq",
+    "availity"
+  ],
+  "author": "The Practice",
+  "license": "MIT",
+  "dependencies": {
+    "retell-sdk": "^1.0.0",
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "redis": "^4.6.0",
+    "crypto": "^1.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "bcrypt": "^5.1.1",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0",
+    "joi": "^17.11.0",
+    "moment": "^2.29.4",
+    "uuid": "^9.0.1",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "eslint": "^8.54.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
