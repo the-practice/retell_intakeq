@@ -69,8 +69,8 @@ class VoiceAgentApp {
     this.app.use(helmet({
       contentSecurityPolicy: {
         directives: {
-          defaultSrc: ["'self'"],
-          connectSrc: ["'self'", "wss:", "https://api.retellai.com", "https://api.intakeq.com", "https://api.availity.com"]
+          defaultSrc: ['\'self\''],
+          connectSrc: ['\'self\'', 'wss:', 'https://api.retellai.com', 'https://api.intakeq.com', 'https://api.availity.com']
         }
       }
     }));
@@ -231,14 +231,16 @@ class VoiceAgentApp {
     const { type, payload } = data;
     
     switch (type) {
-      case 'get_availability':
+      case 'get_availability': {
         const availability = await this.getAvailability(payload);
         ws.send(JSON.stringify({ type: 'availability', data: availability }));
         break;
-      case 'schedule_appointment':
+      }
+      case 'schedule_appointment': {
         const result = await this.scheduleAppointment(payload);
         ws.send(JSON.stringify({ type: 'appointment_result', data: result }));
         break;
+      }
       default:
         ws.send(JSON.stringify({ error: 'Unknown message type' }));
     }

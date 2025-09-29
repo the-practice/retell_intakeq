@@ -184,7 +184,7 @@ class VerificationService {
    */
   isValidDateOfBirth(dateOfBirth) {
     // Accept various formats: MM/DD/YYYY, MM-DD-YYYY, YYYY-MM-DD
-    const dateRegex = /^(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}|\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2})$/;
+    const dateRegex = /^(\d{1,2}[/-]\d{1,2}[/-]\d{4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})$/;
     return dateRegex.test(dateOfBirth);
   }
 
@@ -208,7 +208,7 @@ class VerificationService {
    */
   normalizeDateOfBirth(dateOfBirth) {
     // Handle various input formats
-    let normalized = dateOfBirth.replace(/[\/\-]/g, '/');
+    let normalized = dateOfBirth.replace(/[/-]/g, '/');
     
     // If format is MM/DD/YYYY, convert to YYYY-MM-DD
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(normalized)) {
@@ -226,7 +226,6 @@ class VerificationService {
    * Hash sensitive data for secure storage and comparison
    */
   async hashSensitiveData(data) {
-    const salt = crypto.randomBytes(16).toString('hex');
     const hash = await bcrypt.hash(data, 10);
     return hash;
   }

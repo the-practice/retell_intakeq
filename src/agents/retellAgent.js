@@ -19,8 +19,8 @@ class RetellAgent {
   async createMattAgent() {
     try {
       const agentConfig = {
-        agent_name: "Matt - The Practice Voice Assistant",
-        voice_id: "11labs-Adrian", // Professional, warm voice
+        agent_name: 'Matt - The Practice Voice Assistant',
+        voice_id: '11labs-Adrian', // Professional, warm voice
         voice_temperature: 0.7,
         voice_speed: 1.0,
         volume: 0.8,
@@ -28,34 +28,34 @@ class RetellAgent {
         interruption_sensitivity: 0.7,
         enable_backchannel: true,
         backchannel_frequency: 0.3,
-        backchannel_words: ["mm-hmm", "I understand", "okay", "yes"],
-        language: "en-US",
+        backchannel_words: ['mm-hmm', 'I understand', 'okay', 'yes'],
+        language: 'en-US',
         webhook_url: `${process.env.BASE_URL}/webhook/retell`,
         boosted_keywords: [
-          "appointment", "schedule", "reschedule", "cancel", "insurance",
-          "copay", "deductible", "provider", "doctor", "psychiatrist",
-          "mental health", "therapy", "medication", "follow-up"
+          'appointment', 'schedule', 'reschedule', 'cancel', 'insurance',
+          'copay', 'deductible', 'provider', 'doctor', 'psychiatrist',
+          'mental health', 'therapy', 'medication', 'follow-up'
         ],
         pronunciation_dictionary: [
           {
-            word: "IntakeQ",
-            alphabet: "ipa",
-            phoneme: "ɪnˈteɪk kjuː"
+            word: 'IntakeQ',
+            alphabet: 'ipa',
+            phoneme: 'ɪnˈteɪk kjuː'
           },
           {
-            word: "Availity",
-            alphabet: "ipa", 
-            phoneme: "əˈveɪlɪti"
+            word: 'Availity',
+            alphabet: 'ipa', 
+            phoneme: 'əˈveɪlɪti'
           },
           {
-            word: "Maddix",
-            alphabet: "ipa",
-            phoneme: "ˈmædɪks"
+            word: 'Maddix',
+            alphabet: 'ipa',
+            phoneme: 'ˈmædɪks'
           },
           {
-            word: "Suleiman",
-            alphabet: "ipa",
-            phoneme: "suːˈleɪmən"
+            word: 'Suleiman',
+            alphabet: 'ipa',
+            phoneme: 'suːˈleɪmən'
           }
         ],
         normalize_for_speech: true,
@@ -64,14 +64,14 @@ class RetellAgent {
         begin_message_delay_ms: 2000,
         ring_duration_ms: 25000,
         response_engine: {
-          type: "retell-llm",
+          type: 'retell-llm',
           llm_id: await this.createCustomLLM()
         },
         post_call_analysis_data: [
-          "call_summary",
-          "appointment_scheduled",
-          "insurance_verified",
-          "client_satisfaction"
+          'call_summary',
+          'appointment_scheduled',
+          'insurance_verified',
+          'client_satisfaction'
         ]
       };
 
@@ -90,45 +90,45 @@ class RetellAgent {
       const llmConfig = {
         llm_dynamic_variables: [
           {
-            name: "client_name",
-            description: "The verified client's name"
+            name: 'client_name',
+            description: 'The verified client\'s name'
           },
           {
-            name: "client_phone",
-            description: "The verified client's phone number"
+            name: 'client_phone',
+            description: 'The verified client\'s phone number'
           },
           {
-            name: "client_dob",
-            description: "The verified client's date of birth"
+            name: 'client_dob',
+            description: 'The verified client\'s date of birth'
           },
           {
-            name: "insurance_provider",
-            description: "The client's insurance provider"
+            name: 'insurance_provider',
+            description: 'The client\'s insurance provider'
           },
           {
-            name: "copay_amount",
-            description: "The client's copay amount"
+            name: 'copay_amount',
+            description: 'The client\'s copay amount'
           },
           {
-            name: "provider_availability",
-            description: "Available appointment slots"
+            name: 'provider_availability',
+            description: 'Available appointment slots'
           },
           {
-            name: "appointment_type",
-            description: "Type of appointment requested"
+            name: 'appointment_type',
+            description: 'Type of appointment requested'
           }
         ],
         general_prompt: this.getSystemPrompt(),
         general_prompt_llm_dynamic_variables: [
-          "client_name",
-          "client_phone", 
-          "client_dob",
-          "insurance_provider",
-          "copay_amount",
-          "provider_availability",
-          "appointment_type"
+          'client_name',
+          'client_phone', 
+          'client_dob',
+          'insurance_provider',
+          'copay_amount',
+          'provider_availability',
+          'appointment_type'
         ],
-        general_prompt_llm_dynamic_variables_type: "string"
+        general_prompt_llm_dynamic_variables_type: 'string'
       };
 
       const llm = await this.client.retellLLM.create(llmConfig);

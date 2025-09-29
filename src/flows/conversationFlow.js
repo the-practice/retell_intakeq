@@ -152,27 +152,27 @@ class ConversationFlow {
     if (intent === 'schedule') {
       this.updateConversationState(callId, { step: 'verification' });
       return {
-        message: "Hello! I'm Matt from The Practice psychiatric wellness clinic. I'd be happy to help you schedule an appointment. For your security and HIPAA compliance, I need to verify your identity. Could you please provide your phone number and date of birth?",
+        message: 'Hello! I\'m Matt from The Practice psychiatric wellness clinic. I\'d be happy to help you schedule an appointment. For your security and HIPAA compliance, I need to verify your identity. Could you please provide your phone number and date of birth?',
         nextStep: 'verification',
         requiresVerification: true
       };
     } else if (intent === 'reschedule') {
       this.updateConversationState(callId, { step: 'verification' });
       return {
-        message: "Hello! I'm Matt from The Practice. I can help you reschedule your appointment. For your security, I need to verify your identity first. Could you please provide your phone number and date of birth?",
+        message: 'Hello! I\'m Matt from The Practice. I can help you reschedule your appointment. For your security, I need to verify your identity first. Could you please provide your phone number and date of birth?',
         nextStep: 'verification',
         requiresVerification: true
       };
     } else if (intent === 'cancel') {
       this.updateConversationState(callId, { step: 'verification' });
       return {
-        message: "Hello! I'm Matt from The Practice. I can help you cancel your appointment. For your security, I need to verify your identity first. Could you please provide your phone number and date of birth?",
+        message: 'Hello! I\'m Matt from The Practice. I can help you cancel your appointment. For your security, I need to verify your identity first. Could you please provide your phone number and date of birth?',
         nextStep: 'verification',
         requiresVerification: true
       };
     } else {
       return {
-        message: "Hello! I'm Matt from The Practice psychiatric wellness clinic. How can I help you today? I can assist with scheduling, rescheduling, or canceling appointments.",
+        message: 'Hello! I\'m Matt from The Practice psychiatric wellness clinic. How can I help you today? I can assist with scheduling, rescheduling, or canceling appointments.',
         nextStep: 'greeting',
         options: ['Schedule appointment', 'Reschedule appointment', 'Cancel appointment']
       };
@@ -189,7 +189,7 @@ class ConversationFlow {
     
     if (!verificationData.phoneNumber || !verificationData.dateOfBirth) {
       return {
-        message: "I need both your phone number and date of birth to verify your identity. Please provide both pieces of information.",
+        message: 'I need both your phone number and date of birth to verify your identity. Please provide both pieces of information.',
         nextStep: 'verification',
         requiresVerification: true
       };
@@ -214,7 +214,7 @@ class ConversationFlow {
       };
     } else {
       return {
-        message: "I'm sorry, but I couldn't verify your identity with the information provided. For your security, I cannot access your information. Would you like me to transfer you to our front desk?",
+        message: 'I\'m sorry, but I couldn\'t verify your identity with the information provided. For your security, I cannot access your information. Would you like me to transfer you to our front desk?',
         nextStep: 'verification_failed',
         requiresTransfer: true
       };
@@ -229,7 +229,7 @@ class ConversationFlow {
     
     if (!appointmentType) {
       return {
-        message: "I didn't catch that. What type of appointment would you like? You can choose from: Comprehensive evaluation (60 minutes), Follow-up (15 minutes), or Ketamine consultation (30 minutes).",
+        message: 'I didn\'t catch that. What type of appointment would you like? You can choose from: Comprehensive evaluation (60 minutes), Follow-up (15 minutes), or Ketamine consultation (30 minutes).',
         nextStep: 'appointment_type',
         options: ['Comprehensive evaluation', 'Follow-up', 'Ketamine consultation']
       };
@@ -261,7 +261,7 @@ class ConversationFlow {
     if (!selectedProvider) {
       const availableProviders = this.getAvailableProviders(state.appointmentType);
       return {
-        message: "I didn't catch that. Which provider would you prefer?",
+        message: 'I didn\'t catch that. Which provider would you prefer?',
         nextStep: 'provider_selection',
         providers: availableProviders,
         options: availableProviders.map(p => p.name)
@@ -294,7 +294,7 @@ class ConversationFlow {
     if (!selectedDate) {
       const availableDates = this.getAvailableDates(state.preferredProvider);
       return {
-        message: "I didn't catch that date. What date would work best for you?",
+        message: 'I didn\'t catch that date. What date would work best for you?',
         nextStep: 'date_selection',
         availableDates,
         options: availableDates.slice(0, 5)
@@ -327,7 +327,7 @@ class ConversationFlow {
     if (!selectedTime) {
       const availableTimes = await this.getAvailableTimes(state.preferredProvider, state.preferredDate, state.appointmentType);
       return {
-        message: "I didn't catch that time. What time would work best for you?",
+        message: 'I didn\'t catch that time. What time would work best for you?',
         nextStep: 'time_selection',
         availableTimes,
         options: availableTimes.slice(0, 5)
@@ -340,7 +340,7 @@ class ConversationFlow {
     if (!isAvailable) {
       const availableTimes = await this.getAvailableTimes(state.preferredProvider, state.preferredDate, state.appointmentType);
       return {
-        message: "I'm sorry, that time slot is no longer available. Here are the available times:",
+        message: 'I\'m sorry, that time slot is no longer available. Here are the available times:',
         nextStep: 'time_selection',
         availableTimes,
         options: availableTimes.slice(0, 5)
@@ -373,7 +373,7 @@ class ConversationFlow {
     
     if (!insuranceInfo.provider) {
       return {
-        message: "What insurance provider do you have? We accept Aetna, Blue Cross Blue Shield, Cigna, Medicare, and Tricare.",
+        message: 'What insurance provider do you have? We accept Aetna, Blue Cross Blue Shield, Cigna, Medicare, and Tricare.',
         nextStep: 'insurance_verification',
         options: ['Aetna', 'Blue Cross Blue Shield', 'Cigna', 'Medicare', 'Tricare']
       };
@@ -435,27 +435,27 @@ class ConversationFlow {
       if (appointmentResult.success) {
         this.updateConversationState(callId, { step: 'completed' });
         return {
-          message: `Perfect! Your appointment has been scheduled. You'll receive a confirmation email and text message. Is there anything else I can help you with?`,
+          message: 'Perfect! Your appointment has been scheduled. You\'ll receive a confirmation email and text message. Is there anything else I can help you with?',
           nextStep: 'completed',
           appointmentId: appointmentResult.appointmentId,
           confirmationSent: true
         };
       } else {
         return {
-          message: "I'm sorry, there was an issue scheduling your appointment. Let me try again or would you prefer to speak with our front desk?",
+          message: 'I\'m sorry, there was an issue scheduling your appointment. Let me try again or would you prefer to speak with our front desk?',
           nextStep: 'confirmation',
           error: appointmentResult.error
         };
       }
     } else if (confirmation === 'no') {
       return {
-        message: "No problem! Let me know what you'd like to change about your appointment.",
+        message: 'No problem! Let me know what you\'d like to change about your appointment.',
         nextStep: 'modification',
         options: ['Change provider', 'Change date', 'Change time', 'Change appointment type']
       };
     } else {
       return {
-        message: "I didn't catch that. Is the appointment information correct?",
+        message: 'I didn\'t catch that. Is the appointment information correct?',
         nextStep: 'confirmation',
         options: ['Yes', 'No']
       };
@@ -484,7 +484,7 @@ class ConversationFlow {
    */
   extractVerificationData(message) {
     const phoneRegex = /(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/;
-    const dobRegex = /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}|\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2})/;
+    const dobRegex = /(\d{1,2}[/-]\d{1,2}[/-]\d{4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})/;
     
     const phoneMatch = message.match(phoneRegex);
     const dobMatch = message.match(dobRegex);
@@ -605,7 +605,7 @@ class ConversationFlow {
   detectDateSelection(message) {
     // This would use a more sophisticated date parsing library
     // For now, we'll do basic pattern matching
-    const dateRegex = /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}|\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2})/;
+    const dateRegex = /(\d{1,2}[/-]\d{1,2}[/-]\d{4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})/;
     const match = message.match(dateRegex);
     
     if (match) {
@@ -744,7 +744,7 @@ class ConversationFlow {
    */
   async handleGeneralInquiry() {
     return {
-      message: "I'm here to help with appointment scheduling. Would you like to schedule, reschedule, or cancel an appointment?",
+      message: 'I\'m here to help with appointment scheduling. Would you like to schedule, reschedule, or cancel an appointment?',
       nextStep: 'greeting',
       options: ['Schedule appointment', 'Reschedule appointment', 'Cancel appointment']
     };
@@ -755,7 +755,7 @@ class ConversationFlow {
    */
   getErrorResponse() {
     return {
-      message: "I'm sorry, I'm having trouble processing your request. Let me transfer you to our front desk for assistance.",
+      message: 'I\'m sorry, I\'m having trouble processing your request. Let me transfer you to our front desk for assistance.',
       nextStep: 'error',
       requiresTransfer: true
     };

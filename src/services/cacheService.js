@@ -274,14 +274,14 @@ class CacheService {
         try {
           await this.processWriteBehindOperation(operation);
         } catch (error) {
-          this.logger.error(`Error processing write-behind operation:`, error);
+          this.logger.error('Error processing write-behind operation:', error);
           
           // Retry logic
           if (operation.retries < this.maxRetries) {
             operation.retries++;
             this.writeBehindQueue.push(operation);
           } else {
-            this.logger.error(`Max retries exceeded for operation:`, operation);
+            this.logger.error('Max retries exceeded for operation:', operation);
           }
         }
       }
@@ -307,7 +307,7 @@ class CacheService {
           this.logger.warn(`Unknown write-behind operation: ${operation.operation}`);
       }
     } catch (error) {
-      this.logger.error(`Error processing write-behind operation:`, error);
+      this.logger.error('Error processing write-behind operation:', error);
       throw error;
     }
   }
@@ -326,7 +326,7 @@ class CacheService {
       
       this.logger.debug(`Successfully synced to IntakeQ: ${key}`);
     } catch (error) {
-      this.logger.error(`Error syncing to IntakeQ:`, error);
+      this.logger.error('Error syncing to IntakeQ:', error);
       throw error;
     }
   }
@@ -344,7 +344,7 @@ class CacheService {
       
       this.logger.debug(`Successfully deleted from IntakeQ: ${key}`);
     } catch (error) {
-      this.logger.error(`Error deleting from IntakeQ:`, error);
+      this.logger.error('Error deleting from IntakeQ:', error);
       throw error;
     }
   }
@@ -370,7 +370,7 @@ class CacheService {
       
       return availability;
     } catch (error) {
-      this.logger.error(`Error getting appointment availability:`, error);
+      this.logger.error('Error getting appointment availability:', error);
       throw error;
     }
   }
